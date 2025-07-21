@@ -35,4 +35,15 @@ yarn-error.log*
 .idea/
 
 # OS
-Thumbs.db 
+Thumbs.db
+
+# Deployment and logs
+logs/
+*.log
+.pm2/
+olx-monitor-backup/
+
+# SSH keys (doar în caz că cineva încearcă să le adauge)
+*.pem
+*.key
+id_rsa* 
