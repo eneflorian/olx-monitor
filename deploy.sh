@@ -51,8 +51,8 @@ ssh "$USER@$HOST" << EOF
     cd $REMOTE_PATH
     echo "📥 Pulling latest changes..."
     git fetch --all
-    git reset --hard origin/master
-    git pull origin master
+    git reset --hard origin/main
+    git pull origin main
     
     # Create logs directory if it doesn't exist
     mkdir -p logs

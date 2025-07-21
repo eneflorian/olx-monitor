@@ -1,6 +1,6 @@
 # Deployment Guide pentru olx-monitor
 
-Acest ghid explică cum să configurați și să utilizați sistemul de deployment automat pentru repository-ul olx-monitor.
+Acest ghid explică cum să configurați și să utilizați sistemul de deployment automat pentru repository-ul olx-monitor pe domeniul **orex.site** (VPS IP: 185.104.183.59).
 
 ## 🚀 Configurare GitHub Actions (Recomandat)
 
@@ -11,9 +11,9 @@ Pentru securitate, credentialele VPS-ului sunt stocate ca GitHub Secrets. Accesa
 - Adăugați următoarele secrets:
 
 ```
-VPS_HOST=185.104.183.59
+VPS_HOST=185.104.183.59    # IP-ul serverului orex.site
 VPS_USERNAME=root
-VPS_SSH_KEY=[cheia SSH privată]
+VPS_SSH_KEY=[cheia SSH privată completă]
 VPS_PORT=22
 ```
 
@@ -24,9 +24,11 @@ Pe mașina locală:
 ssh-keygen -t rsa -b 4096 -C "deploy@olx-monitor"
 ```
 
-Copiați cheia publică pe VPS:
+Copiați cheia publică pe VPS (orex.site):
 ```bash
 ssh-copy-id root@185.104.183.59
+# sau direct pe domeniu:
+ssh-copy-id root@orex.site
 ```
 
 Copiați cheia privată în GitHub Secret `VPS_SSH_KEY`.
@@ -34,7 +36,7 @@ Copiați cheia privată în GitHub Secret `VPS_SSH_KEY`.
 ### 3. Deployment automat
 
 Workflow-ul se execută automat la:
-- Push pe branch-ul `master`
+- Push pe branch-ul `main`
 - Poate fi executat manual din GitHub Actions tab
 
 ## 🛠️ Deployment manual cu script
@@ -53,6 +55,14 @@ Workflow-ul se execută automat la:
 ```bash
 ./deploy.sh 185.104.183.59 root /root/olx-monitor
 ```
+
+## 🌐 Informații server
+
+**Domeniu țintă**: orex.site  
+**IP Server**: 185.104.183.59  
+**Utilizator**: root  
+**Port SSH**: 22  
+**Path aplicație**: /root/olx-monitor  
 
 ## 📋 Configurare VPS (Setup inițial)
 
@@ -74,12 +84,18 @@ pm2 startup
 # Urmăriți instrucțiunile afișate
 ```
 
-### 2. Clonare repository pe VPS
+### 2. Clonare repository pe VPS (orex.site)
 
 ```bash
+# Conectare la server
+ssh root@185.104.183.59
+# sau ssh root@orex.site
+
+# Clonare repository
 cd /root
 git clone https://github.com/[username]/olx-monitor.git
 cd olx-monitor
+git checkout main  # Asigură-te că ești pe branch-ul main
 npm install --omit=dev
 ```
 
@@ -127,7 +143,12 @@ După fiecare deployment, verificați:
 
 1. **SSH connection failed**
    - Verificați că cheia SSH este corectă în GitHub Secrets
-   - Testați conexiunea manual: `ssh root@185.104.183.59`
+   - Testați conexiunea manual: 
+     ```bash
+     ssh root@185.104.183.59
+     # sau
+     ssh root@orex.site
+     ```
 
 2. **PM2 restart failed**
    - Verificați logs: `pm2 logs olx-monitor`
@@ -135,7 +156,7 @@ După fiecare deployment, verificați:
 
 3. **Git pull failed**
    - Verificați permisiunile pe VPS
-   - Reset hard: `git reset --hard origin/master`
+   - Reset hard: `git reset --hard origin/main`
 
 ### Rollback în caz de probleme
 
@@ -164,7 +185,7 @@ Logs-urile aplicației sunt stocate în:
 
 ## 🔄 Workflow-ul de deployment
 
-1. **Push pe master** → GitHub Actions se activează
+1. **Push pe main** → GitHub Actions se activează
 2. **Checkout code** → Se descarcă codul recent
 3. **SSH to VPS** → Conectare la server
 4. **Backup** → Se creează backup pentru rollback

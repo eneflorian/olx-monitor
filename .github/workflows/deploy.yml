@@ -3,7 +3,7 @@ name: Deploy to orex.site
 on:
   push:
     branches:
-      - master
+      - main
   workflow_dispatch: # Permite rularea manuală a workflow-ului
 
 jobs:
@@ -39,8 +39,8 @@ jobs:
             cd /root/olx-monitor
             echo "📥 Pulling latest changes..."
             git fetch --all
-            git reset --hard origin/master
-            git pull origin master
+            git reset --hard origin/main
+            git pull origin main
             
             # Install dependencies
             echo "📦 Installing dependencies..."

@@ -43,7 +43,7 @@ Pentru informații complete despre configurarea și deployment-ul aplicației, c
 
 Acest repository are configurat deployment automat pe VPS prin GitHub Actions:
 
-- **Push pe master** → Deployment automat pe VPS
+- **Push pe main** → Deployment automat pe VPS
 - **Manual deployment** → Rulare manuală din GitHub Actions
 - **Script local** → `./deploy.sh` pentru deployment manual
 
