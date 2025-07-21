@@ -10,17 +10,17 @@ export async function POST(request: NextRequest) {
     const { categorie, subcategorie, oras } = body;
 
     // Validare parametri
-    if (!categorie || !subcategorie || !oras) {
+    if (!subcategorie || !oras) {
       return NextResponse.json(
-        { error: 'Parametri lipsă: categorie, subcategorie, oras' },
+        { error: 'Parametri lipsă: subcategorie, oras' },
         { status: 400 }
       );
     }
 
     // Construiește comanda pentru scriptul de extragere
-    const command = `node olx-scraper-intelligent.js --categorie=${categorie} --subcategorie=${subcategorie} --oras=${oras}`;
+    const command = `node olx-scraper-intelligent.js --subcategorie=${subcategorie} --oras=${oras}`;
 
-    console.log(`Pornesc extragerea pentru: ${categorie} - ${subcategorie} - ${oras}`);
+    console.log(`Pornesc extragerea pentru: ${subcategorie} - ${oras}`);
 
     // Rulează scriptul în background
     execAsync(command, { cwd: process.cwd() })
@@ -34,8 +34,8 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json({
       success: true,
-      message: `Extragerea a pornit pentru ${categorie} - ${subcategorie} - ${oras}`,
-      params: { categorie, subcategorie, oras }
+      message: `Extragerea a pornit pentru ${subcategorie} - ${oras}`,
+      params: { subcategorie, oras }
     });
 
   } catch (error) {

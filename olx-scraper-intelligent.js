@@ -28,9 +28,16 @@ function delay(ms) {
 
 function loadExistingData() {
   try {
+    // Verifică dacă directorul există și îl creează dacă nu există
+    const dir = 'src/data';
+    if (!fs.existsSync(dir)) {
+      fs.mkdirSync(dir, { recursive: true });
+    }
+    
     const data = fs.readFileSync('src/data/anunturi-olx-sibiu.json', 'utf8');
     return JSON.parse(data);
   } catch (error) {
+    console.log('Nu s-a putut încărca fișierul existent, se va crea unul nou');
     return {
       anunturi: [],
       ultimaActualizare: null,
@@ -40,7 +47,19 @@ function loadExistingData() {
 }
 
 function saveData(data) {
-  fs.writeFileSync('src/data/anunturi-olx-sibiu.json', JSON.stringify(data, null, 2));
+  try {
+    // Verifică dacă directorul există și îl creează dacă nu există
+    const dir = 'src/data';
+    if (!fs.existsSync(dir)) {
+      fs.mkdirSync(dir, { recursive: true });
+    }
+    
+    fs.writeFileSync('src/data/anunturi-olx-sibiu.json', JSON.stringify(data, null, 2));
+    console.log('Date salvate cu succes');
+  } catch (error) {
+    console.error('Eroare la salvarea datelor:', error.message);
+    throw error;
+  }
 }
 
 function isAnuntExpired(timestamp) {
@@ -78,10 +97,25 @@ function parseArguments() {
 }
 
 async function scrapeOlxIntelligent(params = {}) {
-  const browser = await puppeteer.launch({ 
+  // Configurare pentru Linux environment
+  const browserConfig = { 
     headless: false,
-    args: ['--no-sandbox', '--disable-setuid-sandbox', '--disable-dev-shm-usage', '--disable-blink-features=AutomationControlled']
-  });
+    args: [
+      '--no-sandbox', 
+      '--disable-setuid-sandbox', 
+      '--disable-dev-shm-usage', 
+      '--disable-blink-features=AutomationControlled',
+      '--disable-web-security',
+      '--disable-features=VizDisplayCompositor'
+    ]
+  };
+  
+  // În environment-uri headless (ca serverele), folosește headless mode
+  if (process.env.NODE_ENV === 'production' || process.env.HEADLESS === 'true') {
+    browserConfig.headless = true;
+  }
+  
+  const browser = await puppeteer.launch(browserConfig);
   const page = await browser.newPage();
   await page.setUserAgent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36');
   await page.evaluateOnNewDocument(() => {
@@ -104,6 +138,17 @@ async function scrapeOlxIntelligent(params = {}) {
   // Filtrează orașele și categoriile în funcție de parametri
   const oraseDeExtras = params.oras ? ORASE.filter(o => o.nume.toLowerCase() === params.oras.toLowerCase()) : ORASE;
   const categoriiDeExtras = params.subcategorie ? CATEGORII_IMOBILIARE.filter(c => c.id === params.subcategorie) : CATEGORII_IMOBILIARE;
+  
+  // Verificare dacă parametrii sunt valizi
+  if (params.oras && oraseDeExtras.length === 0) {
+    console.error(`Eroare: Orașul "${params.oras}" nu este valid. Orașe disponibile: ${ORASE.map(o => o.nume).join(', ')}`);
+    return;
+  }
+  
+  if (params.subcategorie && categoriiDeExtras.length === 0) {
+    console.error(`Eroare: Subcategoria "${params.subcategorie}" nu este validă. Subcategorii disponibile: ${CATEGORII_IMOBILIARE.map(c => c.id).join(', ')}`);
+    return;
+  }
 
   console.log(`Extrag pentru: ${oraseDeExtras.map(o => o.nume).join(', ')} - ${categoriiDeExtras.map(c => c.nume).join(', ')}`);
 
@@ -395,7 +440,12 @@ async function scrapeOlxIntelligent(params = {}) {
             
           } else {
             // Pentru alte categorii, folosește metoda standard
-            allAnunturi = await extractAnunturiFromUrl(page, baseUrl, oras, categorie, timestamp);
+            try {
+              allAnunturi = await extractAnunturiFromUrl(page, baseUrl, oras, categorie, timestamp);
+            } catch (error) {
+              console.error(`      Eroare la extragerea pentru ${categorie.nume}:`, error.message);
+              return [];
+            }
           }
           
           return allAnunturi;
@@ -761,12 +811,30 @@ async function scrapeOlxIntelligent(params = {}) {
     stats.peCategorii[anunt.subcategorieNume] = (stats.peCategorii[anunt.subcategorieNume] || 0) + 1;
   });
   
-  fs.writeFileSync('src/data/statistici-olx.json', JSON.stringify(stats, null, 2));
-  console.log('Statistici salvate în src/data/statistici-olx.json');
+  try {
+    // Verifică dacă directorul există și îl creează dacă nu există
+    const dir = 'src/data';
+    if (!fs.existsSync(dir)) {
+      fs.mkdirSync(dir, { recursive: true });
+    }
+    
+    fs.writeFileSync('src/data/statistici-olx.json', JSON.stringify(stats, null, 2));
+    console.log('Statistici salvate în src/data/statistici-olx.json');
+  } catch (error) {
+    console.error('Eroare la salvarea statisticilor:', error.message);
+  }
 }
 
 // Parsează argumentele din linia de comandă
 const params = parseArguments();
 
-// Rulează extragerea cu parametrii
-scrapeOlxIntelligent(params); 
+// Export pentru utilizare ca modul
+module.exports = { scrapeOlxIntelligent };
+
+// Rulează extragerea cu parametrii doar dacă scriptul este rulat direct
+if (require.main === module) {
+  scrapeOlxIntelligent(params).catch(error => {
+    console.error('Eroare critică la extragere:', error);
+    process.exit(1);
+  });
+} 
