@@ -1,0 +1,35 @@
+{
+  "name": "olx-scraper",
+  "version": "1.0.0",
+  "description": "OLX web scraper pentru anunțuri imobiliare",
+  "main": "olx-scraper-intelligent.js",
+  "scripts": {
+    "start": "node olx-scraper-intelligent.js",
+    "test": "node test-selectors.js",
+    "simple": "node olx-scraper-simple.js",
+    "dev": "next dev",
+    "build": "next build",
+    "lint": "next lint"
+  },
+  "dependencies": {
+    "puppeteer": "^21.5.0",
+    "next": "^14.0.0",
+    "react": "^18.0.0",
+    "react-dom": "^18.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "@types/react": "^18.0.0",
+    "@types/react-dom": "^18.0.0",
+    "typescript": "^5.0.0"
+  },
+  "keywords": [
+    "scraper", 
+    "olx", 
+    "puppeteer", 
+    "web-scraping",
+    "real-estate"
+  ],
+  "author": "Developer",
+  "license": "MIT"
+}

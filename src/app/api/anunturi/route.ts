@@ -5,6 +5,13 @@ import path from 'path';
 export async function GET() {
   try {
     const filePath = path.join(process.cwd(), 'src', 'data', 'anunturi-olx-sibiu.json');
+    
+    // Verifică dacă fișierul există
+    if (!fs.existsSync(filePath)) {
+      console.log('Fișierul de anunțuri nu există încă');
+      return NextResponse.json([]);
+    }
+    
     const fileContent = fs.readFileSync(filePath, 'utf8');
     const data = JSON.parse(fileContent);
     

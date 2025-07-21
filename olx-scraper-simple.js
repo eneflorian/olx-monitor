@@ -61,6 +61,13 @@ async function scrapeOlxSimple() {
     });
 
     console.log(`Extrase ${anunturi.length} anunțuri`);
+    
+    // Verifică dacă directorul există și îl creează dacă nu există
+    const dir = 'src/data';
+    if (!fs.existsSync(dir)) {
+      fs.mkdirSync(dir, { recursive: true });
+    }
+    
     fs.writeFileSync('src/data/anunturi-olx-sibiu.json', JSON.stringify(anunturi, null, 2));
 
   } catch (error) {
