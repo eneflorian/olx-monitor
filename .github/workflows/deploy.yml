@@ -1,0 +1,25 @@
+name: Deploy to orex.site
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Deploy via SSH
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: 185.104.183.59
+          username: root
+          password: 12wq3er4
+          script: |
+            cd /root/olx-monitor
+            git pull
+            npm install --omit=dev
+            pm2 restart all || echo "pm2 nu ruleaza, ignora eroarea" 

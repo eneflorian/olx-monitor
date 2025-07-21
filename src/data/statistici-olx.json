@@ -1,0 +1,21 @@
+{
+  "ultimaActualizare": "2025-07-16T14:18:16.390Z",
+  "total": 3643,
+  "noi": 1,
+  "expirate": 0,
+  "peOrase": {
+    "Sibiu": 3642,
+    "Alexandria": 1
+  },
+  "peCategorii": {
+    "Toate din Imobiliare": 50,
+    "Caut coleg - Camere de inchiriat": 7,
+    "Depozite si Hale": 57,
+    "Parcari si Garaje": 8,
+    "Terenuri": 837,
+    "Case de inchiriat": 121,
+    "Birouri - Spatii comerciale": 615,
+    "Apartamente - Garsoniere de vanzare": 960,
+    "Case de vanzare": 988
+  }
+}
