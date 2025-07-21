@@ -43,9 +43,12 @@ npm run lint     # Verifică codul cu ESLint
 
 ### Configurare Deployment
 ```bash
+./check-vps.sh        # Verificare rapidă status VPS
 ./setup-secrets.sh    # Afișează instrucțiuni pentru configurarea GitHub Secrets
 ./setup-vps.sh --local  # Generează script de setup pentru VPS
 ```
+
+📖 **Setup Complet**: Vezi [SETUP_OBLIGATORIU.md](./SETUP_OBLIGATORIU.md) pentru ghidul pas cu pas
 
 ### Debugging VPS
 ```bash
