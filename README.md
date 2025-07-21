@@ -1,38 +1,90 @@
 # OLX Monitor
 
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+Aplicație Next.js pentru monitorizarea anunțurilor de pe OLX, cu deployment automat pe orex.site.
 
-## Getting Started
+> **Deployment Status**: Configurat și actualizat la `2024-12-28 - Configurare deployment automat pe main branch`
 
-First, run the development server:
+## 🚀 Deployment Automat
+
+Aplicația se deploie automat pe **orex.site** la fiecare push pe branch-ul `main`.
+
+### Status Deployment
+- **URL Producție**: http://orex.site
+- **Trigger**: Push pe branch `main`
+- **Server**: VPS 185.104.183.59
+
+Pentru detalii complete despre configurarea deployment-ului, vezi [DEPLOYMENT.md](./DEPLOYMENT.md).
+
+## 🛠️ Dezvoltare Locală
+
+### Instalare și rulare
 
 ```bash
+# Instalează dependențele
+npm install
+
+# Rulează serverul de dezvoltare
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Deschide [http://localhost:3000](http://localhost:3000) în browser pentru a vedea aplicația.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### Comenzi disponibile
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```bash
+npm run dev      # Server de dezvoltare cu Turbopack
+npm run build    # Build pentru producție
+npm run start    # Pornește aplicația în modul producție
+npm run lint     # Verifică codul cu ESLint
+```
 
-## Learn More
+## 🔧 Scripturi Utile
 
-To learn more about Next.js, take a look at the following resources:
+### Configurare Deployment
+```bash
+./setup-secrets.sh    # Afișează instrucțiuni pentru configurarea GitHub Secrets
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+### Debugging VPS
+```bash
+./debug-vps.sh        # Verifică status aplicației pe VPS
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## 📁 Structura Proiectului
 
-## Deploy on Vercel
+- `src/` - Codul sursă al aplicației Next.js
+- `public/` - Asset-uri statice
+- `.github/workflows/` - Configurări GitHub Actions pentru deployment
+- `olx-scraper-*.js` - Scripturi pentru scraping OLX
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## 🔍 Monitorizare și Debugging
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+### Verificare status aplicație pe VPS
+```bash
+ssh root@185.104.183.59
+pm2 status
+pm2 logs olx-monitor
+```
+
+### Verificare deployment în GitHub
+1. Mergi la tab-ul **Actions** din repository
+2. Verifică status-ul ultimului workflow "Deploy to orex.site"
+3. În caz de erori, verifică logs-urile de deployment
+
+## 🏗️ Tehnologii Folosite
+
+- **Framework**: Next.js 15.4.1
+- **Runtime**: Node.js 18+
+- **Styling**: Tailwind CSS 4
+- **Language**: TypeScript
+- **Process Manager**: PM2 (pe VPS)
+- **CI/CD**: GitHub Actions
+
+## 📖 Learn More
+
+Pentru a afla mai multe despre Next.js:
+
+- [Next.js Documentation](https://nextjs.org/docs) - caracteristici și API Next.js
+- [Learn Next.js](https://nextjs.org/learn) - tutorial interactiv Next.js
+
+Repository Next.js: [GitHub](https://github.com/vercel/next.js)
