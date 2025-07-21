@@ -2,9 +2,9 @@
 
 # Script pentru debugging aplicației pe VPS
 
-VPS_HOST="185.104.183.59"
+VPS_HOST="64.225.49.128"
 VPS_USER="root"
-APP_DIR="/root/olx-monitor"
+APP_DIR="/var/www/orex.site"
 
 echo "=== Debugging OLX Monitor pe orex.site ==="
 echo ""
@@ -25,7 +25,7 @@ pm2 logs olx-monitor --lines 20
 
 echo ""
 echo "=== Verificare Git Status ==="
-cd /root/olx-monitor
+cd /var/www/orex.site
 echo "Branch curent: $(git branch --show-current)"
 echo "Ultimul commit: $(git log --oneline -1)"
 echo "Status git: $(git status --porcelain)"
@@ -36,20 +36,46 @@ echo "Node.js versiune: $(node --version)"
 echo "NPM versiune: $(npm --version)"
 
 echo ""
-echo "=== Verificare procese ==="
+echo "=== Verificare procese Node.js ==="
 ps aux | grep node | grep -v grep
 
 echo ""
 echo "=== Verificare porturi ==="
+echo "Port 3000 (aplicația):"
 netstat -tlnp | grep :3000
+echo "Port 80 (nginx):"
+netstat -tlnp | grep :80
+
+echo ""
+echo "=== Status Nginx ==="
+systemctl status nginx --no-pager
+nginx -t
+
+echo ""
+echo "=== Configurare Nginx pentru orex.site ==="
+if [ -f /etc/nginx/sites-available/orex.site ]; then
+    echo "✅ Configurarea nginx există"
+    cat /etc/nginx/sites-available/orex.site
+else
+    echo "❌ Configurarea nginx lipsește"
+fi
+
+echo ""
+echo "=== Site-uri nginx activate ==="
+ls -la /etc/nginx/sites-enabled/
+
+echo ""
+echo "=== Verificare DNS și conectivitate ==="
+echo "Rezoluție DNS pentru orex.site:"
+nslookup orex.site
 
 echo ""
 echo "=== Verificare disk space ==="
 df -h | head -5
 
 echo ""
-echo "=== Verificare ultimele modificări ale fișierelor ==="
-find /root/olx-monitor -name "*.js" -o -name "*.json" -o -name "*.ts" | head -10 | xargs ls -la
+echo "=== Ultimele modificări ale fișierelor ==="
+find /var/www/orex.site -name "*.js" -o -name "*.json" -o -name "*.ts" | head -10 | xargs ls -la
 
 EOF
 
@@ -63,7 +89,11 @@ rm temp_debug.sh
 echo ""
 echo "=== Comenzi utile pentru debugging manual ==="
 echo "Conectare VPS: ssh $VPS_USER@$VPS_HOST"
+echo "Navigare la aplicație: cd $APP_DIR"
 echo "Restart aplicație: pm2 restart olx-monitor"
 echo "Start aplicație: pm2 start npm --name 'olx-monitor' -- start"
-echo "Verificare logs live: pm2 logs olx-monitor --follow"
+echo "Verificare logs aplicație: pm2 logs olx-monitor --follow"
 echo "Status PM2: pm2 status"
+echo "Restart nginx: systemctl restart nginx"
+echo "Verificare nginx config: nginx -t"
+echo "Logs nginx: tail -f /var/log/nginx/error.log"

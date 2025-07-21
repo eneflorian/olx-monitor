@@ -11,7 +11,8 @@ Aplicația se deploie automat pe **orex.site** la fiecare push pe branch-ul `mai
 ### Status Deployment
 - **URL Producție**: http://orex.site
 - **Trigger**: Push pe branch `main`
-- **Server**: VPS 185.104.183.59
+- **Server**: VPS 64.225.49.128
+- **Directorul aplicației**: `/var/www/orex.site`
 
 Pentru detalii complete despre configurarea deployment-ului, vezi [DEPLOYMENT.md](./DEPLOYMENT.md).
 
@@ -43,6 +44,7 @@ npm run lint     # Verifică codul cu ESLint
 ### Configurare Deployment
 ```bash
 ./setup-secrets.sh    # Afișează instrucțiuni pentru configurarea GitHub Secrets
+./setup-vps.sh --local  # Generează script de setup pentru VPS
 ```
 
 ### Debugging VPS
@@ -61,9 +63,10 @@ npm run lint     # Verifică codul cu ESLint
 
 ### Verificare status aplicație pe VPS
 ```bash
-ssh root@185.104.183.59
+ssh root@64.225.49.128
 pm2 status
 pm2 logs olx-monitor
+systemctl status nginx
 ```
 
 ### Verificare deployment în GitHub

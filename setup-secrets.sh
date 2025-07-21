@@ -11,7 +11,7 @@ echo "Repository Settings → Secrets and variables → Actions → New reposito
 echo ""
 
 echo "1. VPS_HOST"
-echo "   Valoare: 185.104.183.59"
+echo "   Valoare: 64.225.49.128"
 echo ""
 
 echo "2. VPS_USERNAME"
@@ -19,7 +19,14 @@ echo "   Valoare: root"
 echo ""
 
 echo "3. VPS_PASSWORD"
-echo "   Valoare: 12wq3er4"
+echo "   Valoare: 12wqe34"
+echo ""
+
+echo "=== Configurare VPS ==="
+echo "Domeniu: orex.site"
+echo "Directorul aplicației: /var/www/orex.site"
+echo "Port aplicație: 3000"
+echo "Proxy nginx: localhost:3000 → orex.site"
 echo ""
 
 echo "=== Verificare configurare curentă ==="
@@ -38,6 +45,7 @@ fi
 echo ""
 echo "=== Pasii următori ==="
 echo "1. Configurează secrets-urile în GitHub (vezi mai sus)"
-echo "2. Fă commit și push pe branch-ul main"
-echo "3. Verifică tab-ul Actions din GitHub pentru status deployment"
-echo "4. Verifică site-ul pe orex.site"
+echo "2. Asigură-te că VPS-ul are directorul /var/www/orex.site"
+echo "3. Fă commit și push pe branch-ul main"
+echo "4. Verifică tab-ul Actions din GitHub pentru status deployment"
+echo "5. Verifică site-ul pe http://orex.site"
